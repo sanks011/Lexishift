@@ -1,6 +1,7 @@
 import io
 import os
 import logging
+import json
 import pdfplumber
 from flask import Blueprint, render_template, request, send_file, jsonify, url_for, send_from_directory
 from reportlab.pdfgen import canvas
@@ -16,6 +17,12 @@ from .ml_model import train_model, predict_formatting
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 main = Blueprint('main', __name__)
+
+
+
+with open('data/books.json') as f:
+    books = json.load(f)
+
 
 @main.route('/')
 def index():
@@ -37,6 +44,44 @@ def privacy():
 @main.route('/terms')
 def terms():
     return render_template('terms.html')
+
+@main.route('/learn_more')
+def learn_more():
+    return render_template('learn_more.html')
+
+
+@main.route('/api/books')
+def get_books():
+    search_query = request.args.get('q', '').lower()
+    if search_query:
+        filtered_books = [book for book in books if search_query in book['title'].lower()]
+    else:
+        filtered_books = books
+    return jsonify(filtered_books)
+
+
+@main.route('/ai_recommendations', methods=['POST'])
+def ai_recommendations():
+    form_data = request.form
+
+    # Extract relevant data from form_data
+    font_size = int(form_data.get('font_size', 12))
+    line_spacing = int(form_data.get('line_spacing', 1))
+    font_family = form_data.get('font_family', 'Arial')
+
+    # Simple heuristic for generating recommendations
+    recommendations = []
+
+    if font_size < 14:
+        recommendations.append("Consider using a larger font size for better readability.")
+    if line_spacing < 1.5:
+        recommendations.append("Increase the line spacing to at least 1.5 for improved readability.")
+    
+
+    if not recommendations:
+        recommendations.append("Your document settings are optimal!")
+
+    return jsonify({"recommendations": recommendations})
 
 def convert_text(text):
     return text.upper()
