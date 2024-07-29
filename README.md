@@ -89,7 +89,7 @@ Contributions are welcome! If you would like to contribute to Lexishift, please 
 
 
 ## License 📝
-This project is licensed under the [MIT](https://choosealicense.com/licenses/mit/) License. See the [LICENSE](https://choosealicense.com/licenses/mit/) file for more details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/sanks011/Lexishift?tab=MIT-1-ov-file) file for more details.
 
 
 
